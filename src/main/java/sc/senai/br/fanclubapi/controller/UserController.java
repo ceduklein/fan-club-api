@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import sc.senai.br.fanclubapi.dto.AdminDTO;
 import sc.senai.br.fanclubapi.dto.UserDTO;
 import sc.senai.br.fanclubapi.model.entity.User;
@@ -22,12 +24,14 @@ import sc.senai.br.fanclubapi.service.UserService;
 
 @RestController
 @RequestMapping("/api/usuarios")
+@Tag(name = "Usuários")
 public class UserController {
 	
 	@Autowired
 	private UserService service;
 
 	@PostMapping("/cadastro")
+	@Operation(summary = "Cadastro de Usuário")
 	public ResponseEntity<?> salvar(@RequestBody UserDTO dto) {
 		try {
 			User user = service.salvar(dto);
@@ -38,6 +42,7 @@ public class UserController {
 	}
 	
 	@PostMapping("/login")
+	@Operation(summary = "Login")
 	public ResponseEntity<?> autenticar(@RequestBody UserDTO dto) {
 		try {
 			User user = service.autenticar(dto.getEmail(), dto.getPassword());
@@ -48,6 +53,7 @@ public class UserController {
 	}
 	
 	@GetMapping()
+	@Operation(summary = "Listar Usuários")
 	public ResponseEntity<?> listar(@RequestParam Long admin_id) {
 		try {
 			List<User> users = service.listar(admin_id);
@@ -58,6 +64,7 @@ public class UserController {
 	}
 	
 	@GetMapping("{id}")
+	@Operation(summary = "Buscar Usuário por Id")
 	public ResponseEntity<?> buscarPorId(@PathVariable("id") Long id) {
 		try {
 			User user = service.buscarPorId(id);
@@ -68,6 +75,7 @@ public class UserController {
 	}
 	
 	@PatchMapping("/permissoes/{user_id}")
+	@Operation(summary = "Alterar Permissão de Usuário")
 	public ResponseEntity<?> setAdmin(@PathVariable("user_id") Long user_id, @RequestBody AdminDTO dto) {
 		try {
 			service.setAdmin(user_id, dto.getAdmin_id());
@@ -78,6 +86,7 @@ public class UserController {
 	}
 	
 	@PutMapping("{id}")
+	@Operation(summary = "Atualizar Cadasto de Usuário")
 	public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody UserDTO dto) {
 		try {
 			User user = service.atualizar(id, dto);
@@ -87,7 +96,8 @@ public class UserController {
 		}
 	}
 	
-	@PatchMapping("/emissao/{user_id}") 
+	@PatchMapping("/emissao/{user_id}")
+	@Operation(summary = "Emitir Carteirinha")
 	public ResponseEntity<?> emitir(@PathVariable("user_id") Long user_id, @RequestBody AdminDTO dto) {
 		try {
 			User user = service.emitirCarteira(user_id, dto.getAdmin_id());
@@ -98,6 +108,7 @@ public class UserController {
 	}
 	
 	@PatchMapping("/envio/{user_id}") 
+	@Operation(summary = "Enviar Carteirinha")
 	public ResponseEntity<?> enviar(@PathVariable("user_id") Long user_id, @RequestBody AdminDTO dto) {
 		try {
 			User user = service.enviarCarteira(user_id, dto.getAdmin_id());
