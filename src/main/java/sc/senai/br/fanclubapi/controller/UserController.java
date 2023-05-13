@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import sc.senai.br.fanclubapi.dto.AdminDTO;
+import sc.senai.br.fanclubapi.dto.PasswordDTO;
 import sc.senai.br.fanclubapi.dto.UserDTO;
 import sc.senai.br.fanclubapi.model.entity.User;
 import sc.senai.br.fanclubapi.service.UserService;
@@ -117,6 +119,28 @@ public class UserController {
 			return new ResponseEntity<>(user, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+		}
+	}
+	
+	@DeleteMapping("{id}")
+	@Operation(summary = "Deletar Usuário")
+	public ResponseEntity<?> deleteUser(@PathVariable("id") Long id) {
+		try {
+			service.delete(id);
+			return new ResponseEntity<>("Successfully deleted user account.", HttpStatus.OK);
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+		}
+	}
+	
+	@PatchMapping("/change-password/{id}")
+	@Operation(summary = "Alterar Senha")
+	public ResponseEntity<?> changePassword(@PathVariable("id") Long id, @RequestBody PasswordDTO dto) {
+		try {
+			service.changePassword(id, dto);
+			return new ResponseEntity<>("Password changed successfully.", HttpStatus.OK);
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
 }

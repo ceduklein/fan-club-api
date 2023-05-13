@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import sc.senai.br.fanclubapi.dto.PasswordDTO;
 import sc.senai.br.fanclubapi.dto.UserDTO;
 import sc.senai.br.fanclubapi.exception.RulesException;
 import sc.senai.br.fanclubapi.model.entity.User;
@@ -106,6 +107,34 @@ public class UserService {
 		user.setTelefone(dto.getTelefone());
 				
 		return repository.save(user);
+	}
+	
+	public void delete(Long id) throws RulesException {
+		Optional<User> user = repository.findById(id);
+		if (!user.isPresent()) {
+			throw new RulesException("User not found.");
+		}
+		
+		repository.delete(user.get());
+	}
+	
+	public void changePassword(Long id, PasswordDTO dto) throws RulesException {
+		Optional<User> user = repository.findById(id);
+		System.out.println(dto);
+		if (!user.isPresent()) {
+			throw new RulesException("User not found.");
+		}
+		
+		if (!encoder.matches(dto.getOldPassword(), user.get().getPassword())) {
+			throw new RulesException("Old password is incorrect.");
+		}
+		
+		if (!dto.getPassword().equals(dto.getPasswordConfirmation())) {
+			throw new RulesException("The new password and its confirmation do not match.");
+		}
+			
+		user.get().setPassword(encoder.encode(dto.getPassword()));
+		repository.save(user.get());
 	}
 	
 	private void validarNomeEEmail(String nome, String email) throws RulesException {
