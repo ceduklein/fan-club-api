@@ -59,6 +59,11 @@ public class UserService {
 		return repository.findAll(Sort.by(Sort.Direction.ASC, "id"));
 	}
 	
+	public List<User> listarPendentes(Long admin_id) throws RulesException {
+		validarPermissao(admin_id);
+		return repository.findAllWhere();
+	}
+	
 	public User buscarPorId(Long id) throws RulesException {
 		Optional<User> user = repository.findById(id);
 		if (!user.isPresent())

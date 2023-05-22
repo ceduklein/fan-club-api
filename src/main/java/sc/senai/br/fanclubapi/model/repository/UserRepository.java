@@ -1,5 +1,6 @@
 package sc.senai.br.fanclubapi.model.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,4 +19,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	
 	@Query("from User u where u.id != :id and u.email = :email")
 	Optional<User> findByEmailWhere(@Param("id") Long id, @Param("email") String email);
+	
+	@Query("from User u where u.carteirinhaEmitida = false or u.carteirinhaEnviada = false order by u.id")
+	List<User> findAllWhere();
 }

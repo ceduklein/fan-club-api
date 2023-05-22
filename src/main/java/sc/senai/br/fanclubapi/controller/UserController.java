@@ -67,6 +67,17 @@ public class UserController {
 		}
 	}
 	
+	@GetMapping("/pendentes")
+	@Operation(summary = "Listar Usuários")
+	public ResponseEntity<?> listarPendentes(@RequestParam Long admin_id) {
+		try {
+			List<User> users = service.listarPendentes(admin_id);
+			return new ResponseEntity<>(users, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+		}
+	}
+	
 	@GetMapping("{id}")
 	@Operation(summary = "Buscar Usuário por Id")
 	public ResponseEntity<?> buscarPorId(@PathVariable("id") Long id) {
